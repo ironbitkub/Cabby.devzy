@@ -6,7 +6,7 @@ local function prank()
 
     
 
-    player:Kick("banned")
+    player:Kick("ถูกแบนจากประสบการณ์​นี้30วันโปรดหยุดการเข้าร่วมประสบการณ์​เพื่อกระปลดแบน")
 end
 
 prank()

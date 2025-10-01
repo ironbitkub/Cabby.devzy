@@ -159,8 +159,8 @@ createToggle(PlayerPage,"Light",function(state)
 		local light = Instance.new("PointLight")
 		light.Name = "BodyLight"
 		light.Parent = Player.Character:WaitForChild("HumanoidRootPart")
-		light.Brightness = 2
-		light.Range = 20
+		light.Brightness = 50
+		light.Range = 50
 	else
 		if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
 			local l = Player.Character.HumanoidRootPart:FindFirstChild("BodyLight")

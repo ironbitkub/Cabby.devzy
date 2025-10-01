@@ -1,4 +1,4 @@
-local Players = game:GetService("Players")
+7local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -412,8 +412,8 @@ createToggle(PlayerPage,"Light",function(state)
 		local light = Instance.new("PointLight")
 		light.Name = "BodyLight"
 		light.Parent = Player.Character:WaitForChild("HumanoidRootPart")
-		light.Brightness = 100
-		light.Range = 100
+		light.Brightness = 30
+		light.Range = 30
 	else
 		if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
 			local l = Player.Character.HumanoidRootPart:FindFirstChild("BodyLight")

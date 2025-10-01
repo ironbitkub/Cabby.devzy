@@ -66,8 +66,8 @@ createButton(mainTab, "Body Light", function()
         local newLight = Instance.new("PointLight")
         newLight.Name = "BodyLight"
         newLight.Parent = hrp
-        newLight.Range = 1000
-        newLight.Brightness = 100
+        newLight.Range = 200
+        newLight.Brightness = 10
         newLight.Color = Color3.new(1, 1, 1)
     end
 end)

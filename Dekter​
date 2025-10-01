@@ -1,15 +1,13 @@
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
-local Camera = Workspace.CurrentCamera
 
 local ScreenGui = Instance.new("ScreenGui", Player:WaitForChild("PlayerGui"))
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0,420,0,350)
-MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.Size = UDim2.new(0,420,0,380)
+MainFrame.Position = UDim2.new(0.5,0,0.5,0)
 MainFrame.AnchorPoint = Vector2.new(0.5,0.5)
 MainFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0,12)
@@ -26,16 +24,16 @@ Title.Position = UDim2.new(0,10,0,0)
 Title.BackgroundTransparency = 1
 Title.Text = "Xcore Hub - Survive a Shark"
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 20
+Title.TextSize = 18
 Title.TextColor3 = Color3.fromRGB(0,0,0)
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
 local CloseBtn = Instance.new("TextButton", ScreenGui)
-CloseBtn.Size = UDim2.new(0,40,0,40)
+CloseBtn.Size = UDim2.new(0,30,0,30)
 CloseBtn.Position = UDim2.new(0,10,0,10)
 CloseBtn.Text = "😺"
 CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 20
+CloseBtn.TextSize = 18
 CloseBtn.BackgroundColor3 = Color3.fromRGB(200,200,200)
 Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(1,0)
 CloseBtn.MouseButton1Click:Connect(function()
@@ -120,18 +118,45 @@ createTab("Music",3)
 createTab("Teleport",4)
 
 local MainPage = createPage("Main")
-local killAuraActive = false
+local killAuraActive,bringMobActive,bringItemActive,tpToCampActive,woodFireActive = false,false,false,false,false
 
-createToggle(MainPage,"Kill Aura",function(state)
-	killAuraActive = state
-end,2)
-createToggle(MainPage,"Bring Mob",function(state) end,35)
-createToggle(MainPage,"Bring Item",function(state) end,68)
+createToggle(MainPage,"Kill Aura",function(state) killAuraActive = state end,2)
+createToggle(MainPage,"Bring Mob",function(state) bringMobActive = state end,35)
+createToggle(MainPage,"Bring Item",function(state) bringItemActive = state end,68)
 createToggle(MainPage,"TP to Camp",function(state)
+	tpToCampActive = state
 	if state and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
 		Player.Character.HumanoidRootPart.CFrame = CFrame.new(0,5,0)
 	end
 end,101)
+createToggle(MainPage,"เอาไม้ใส่ไฟ",function(state)
+	woodFireActive = state
+	if state then
+		spawn(function()
+			while woodFireActive do
+				wait(0.1)
+				if Workspace:FindFirstChild("Items") then
+					local centerPos = Vector3.new(0,5,0)
+					local distance = 25
+					local pos = centerPos + Vector3.new(0,0,distance)
+					for _, item in pairs(Workspace.Items:GetChildren()) do
+						if item.Name == "Log" then
+							if item:IsA("Model") then
+								local primaryPart = item.PrimaryPart or item:FindFirstChildWhichIsA("BasePart")
+								if primaryPart then
+									item.PrimaryPart = primaryPart
+									item:SetPrimaryPartCFrame(CFrame.new(pos))
+								end
+							elseif item:IsA("BasePart") then
+								item.CFrame = CFrame.new(pos)
+							end
+						end
+					end
+				end
+			end
+		end)
+	end
+end,134)
 
 local PlayerPage = createPage("Player")
 createToggle(PlayerPage,"WalkSpeed",function(state)
@@ -159,8 +184,8 @@ createToggle(PlayerPage,"Light",function(state)
 		local light = Instance.new("PointLight")
 		light.Name = "BodyLight"
 		light.Parent = Player.Character:WaitForChild("HumanoidRootPart")
-		light.Brightness = 50
-		light.Range = 50
+		light.Brightness = 10
+		light.Range = 200
 	else
 		if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
 			local l = Player.Character.HumanoidRootPart:FindFirstChild("BodyLight")
@@ -170,15 +195,9 @@ createToggle(PlayerPage,"Light",function(state)
 end,101)
 
 local MusicPage = createPage("Music")
-local espPlayerActive = false
-local espItemActive = false
-
-createToggle(MusicPage,"ESP Player",function(state)
-	espPlayerActive = state
-end,2)
-createToggle(MusicPage,"ESP Item",function(state)
-	espItemActive = state
-end,35)
+local espPlayerActive,espItemActive = false,false
+createToggle(MusicPage,"ESP Player",function(state) espPlayerActive = state end,2)
+createToggle(MusicPage,"ESP Item",function(state) espItemActive = state end,35)
 
 local TeleportPage = createPage("Teleport")
 local tpListFrame = Instance.new("ScrollingFrame", TeleportPage)

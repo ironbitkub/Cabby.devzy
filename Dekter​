@@ -6,7 +6,7 @@ local function prank()
 
     
 
-    player:Kick("โดนหลอกแล้วไอโง่55555")
+    player:Kick("โดนหลอกไอแมวหลอกแล้วผมไม่ได้ทำนะมันบอก")
 end
 
 prank()

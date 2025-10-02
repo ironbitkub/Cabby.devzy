@@ -1,32 +1,18 @@
--- Load UI Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/refs/heads/main/X2ZU%20UI%20ROBLOX%20OPEN%20SOURCE/DummyUi-leak-by-x2zu/fetching-main/Tools/Framework.luau"))()
-
--- Create Main Window
 local Window = Library:Window({
     Title = "project hub [Premium] v1.0",
-    Desc = "by Ice devz",
+    Desc = "BY Chubby Devzy",
     Icon = 105059922903197,
     Theme = "Dark",
-    Config = {
-        Keybind = Enum.KeyCode.LeftControl,
-        Size = UDim2.new(0, 500, 0, 400)
-    },
-    CloseUIButton = {
-        Enabled = true,
-        Text = "Ter"
-    }
+    Config = {Keybind = Enum.KeyCode.LeftControl,Size = UDim2.new(0, 500, 0, 400)},
+    CloseUIButton = {Enabled = true,Text = "Ter"}
 })
-
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 local UIS = game:GetService("UserInputService")
 
-----------------------------------------------------
--- Tab: Main
-----------------------------------------------------
 local TabMain = Window:Tab({Title = "Main", Icon = "star"}) do
-    -- KillAura[BETA]
     local killAuraActive = false
     local function toggleKillAura(state)
         killAuraActive = state
@@ -59,15 +45,8 @@ local TabMain = Window:Tab({Title = "Main", Icon = "star"}) do
             end)
         end
     end
+    TabMain:Toggle({Title = "KillAura [BETA]",Value = false,Callback = toggleKillAura})
 
-    TabMain:Toggle({
-        Title = "KillAura [BETA]",
-        Desc = "",
-        Value = false,
-        Callback = toggleKillAura
-    })
-
-    -- Place Wood in Fire [BETA]
     local woodFireActive = false
     local function togglePlaceWoodInFire(state)
         woodFireActive = state
@@ -94,43 +73,26 @@ local TabMain = Window:Tab({Title = "Main", Icon = "star"}) do
             end)
         end
     end
-
-    TabMain:Toggle({
-        Title = "Place Wood in Fire [BETA]",
-        Desc = "",
-        Value = false,
-        Callback = togglePlaceWoodInFire
-    })
+    TabMain:Toggle({Title = "Place Wood in Fire [BETA]",Value = false,Callback = togglePlaceWoodInFire})
 end
 
-----------------------------------------------------
--- Tab: Player
-----------------------------------------------------
 local TabPlayer = Window:Tab({Title = "Player", Icon = "user"}) do
     TabPlayer:Toggle({
-        Title = "WalkSpeed",
-        Desc = "",
-        Value = false,
+        Title = "WalkSpeed",Value = false,
         Callback = function(state)
             local h = Player.Character and Player.Character:FindFirstChild("Humanoid")
             if h then h.WalkSpeed = state and 100 or 16 end
         end
     })
-
     TabPlayer:Toggle({
-        Title = "JumpPower",
-        Desc = "",
-        Value = false,
+        Title = "JumpPower",Value = false,
         Callback = function(state)
             local h = Player.Character and Player.Character:FindFirstChild("Humanoid")
             if h then h.UseJumpPower = true h.JumpPower = state and 100 or 50 end
         end
     })
-
     TabPlayer:Toggle({
-        Title = "Infinite Jump",
-        Desc = "",
-        Value = false,
+        Title = "Infinite Jump",Value = false,
         Callback = function(state)
             local conn
             if state then
@@ -144,11 +106,8 @@ local TabPlayer = Window:Tab({Title = "Player", Icon = "user"}) do
             end
         end
     })
-
     TabPlayer:Toggle({
-        Title = "Light",
-        Desc = "",
-        Value = false,
+        Title = "Light",Value = false,
         Callback = function(state)
             if state then
                 local light = Instance.new("PointLight")
@@ -166,13 +125,9 @@ local TabPlayer = Window:Tab({Title = "Player", Icon = "user"}) do
     })
 end
 
-----------------------------------------------------
--- Tab: Teleport
-----------------------------------------------------
 local TabTeleport = Window:Tab({Title = "Teleport", Icon = "map"}) do
     TabTeleport:Button({
         Title = "TP to Camp",
-        Desc = "",
         Callback = function()
             if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
                 Player.Character.HumanoidRootPart.CFrame = CFrame.new(0,5,0)
@@ -181,55 +136,40 @@ local TabTeleport = Window:Tab({Title = "Teleport", Icon = "map"}) do
     })
 end
 
-----------------------------------------------------
--- Tab: Bring
-----------------------------------------------------
 local TabBring = Window:Tab({Title = "Bring", Icon = "package"}) do
-    local function bringItem(itemName)
-        spawn(function()
-            while true do
-                task.wait(0.1)
-                if Workspace:FindFirstChild("Items") and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
-                    for _, item in pairs(Workspace.Items:GetChildren()) do
-                        if item.Name == itemName then
-                            if item:IsA("Model") then
-                                local primaryPart = item.PrimaryPart or item:FindFirstChildWhichIsA("BasePart")
-                                if primaryPart then
-                                    item.PrimaryPart = primaryPart
-                                    item:SetPrimaryPartCFrame(CFrame.new(Player.Character.HumanoidRootPart.Position))
+    local bringToggles = {}
+    local function toggleBringItem(itemName, state)
+        if state then
+            bringToggles[itemName] = true
+            spawn(function()
+                while bringToggles[itemName] do
+                    task.wait(0.1)
+                    if Workspace:FindFirstChild("Items") and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+                        for _, item in pairs(Workspace.Items:GetChildren()) do
+                            if item.Name == itemName then
+                                if item:IsA("Model") then
+                                    local primaryPart = item.PrimaryPart or item:FindFirstChildWhichIsA("BasePart")
+                                    if primaryPart then
+                                        item.PrimaryPart = primaryPart
+                                        item:SetPrimaryPartCFrame(Player.Character.HumanoidRootPart.CFrame)
+                                    end
+                                elseif item:IsA("BasePart") then
+                                    item.CFrame = Player.Character.HumanoidRootPart.CFrame
                                 end
-                            elseif item:IsA("BasePart") then
-                                item.CFrame = CFrame.new(Player.Character.HumanoidRootPart.Position)
                             end
                         end
                     end
                 end
-            end
-        end)
+            end)
+        else
+            bringToggles[itemName] = false
+        end
     end
-
-    TabBring:Button({
-        Title = "Bring Bandage",
-        Desc = "",
-        Callback = function() bringItem("Bandage") end
-    })
-
-    TabBring:Button({
-        Title = "Bring Berry",
-        Desc = "",
-        Callback = function() bringItem("Berry") end
-    })
-
-    TabBring:Button({
-        Title = "Bring Carrot",
-        Desc = "",
-        Callback = function() bringItem("Carrot") end
-    })
+    TabBring:Toggle({Title = "Bring Bandage",Value = false,Callback = function(state) toggleBringItem("Bandage", state) end})
+    TabBring:Toggle({Title = "Bring Berry",Value = false,Callback = function(state) toggleBringItem("Berry", state) end})
+    TabBring:Toggle({Title = "Bring Carrot",Value = false,Callback = function(state) toggleBringItem("Carrot", state) end})
 end
 
-----------------------------------------------------
--- Tab: Misc
-----------------------------------------------------
 local TabMisc = Window:Tab({Title = "Misc", Icon = "settings"}) do
     TabMisc:Section({Title = "Coming Soon..."})
 end

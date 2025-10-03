@@ -1,178 +1,151 @@
-
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/x2zu/OPEN-SOURCE-UI-ROBLOX/refs/heads/main/X2ZU%20UI%20ROBLOX%20OPEN%20SOURCE/DummyUi-leak-by-x2zu/fetching-main/Tools/Framework.luau"))()
+local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
+local Wait = library.subs.Wait
 
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local Workspace = game:GetService("Workspace")
 local UIS = game:GetService("UserInputService")
 
-local Window = Library:Window({
-    Title = "project hub [Premium] v1.0",
-    Desc = "Rubby",
-    Icon = 105059922903197,
-    Theme = "Dark",
-    Config = {
-        Keybind = Enum.KeyCode.LeftControl,
-        Size = UDim2.new(0, 500, 0, 400)
-    },
-    CloseUIButton = {
-        Enabled = true,
-        Text = "Ter"
-    }
+local ProjectHub = library:CreateWindow({
+    Name = "Project Hub [Premium]",
+    Themeable = {Info = "Discord: VzYTJ7Y"}
 })
 
+local MainTab = ProjectHub:CreateTab({Name = "Main"})
+local CombatSection = MainTab:CreateSection({Name = "Combat"})
+local FarmSection = MainTab:CreateSection({Name = "Farming"})
 
-local TabMain = Window:Tab({Title = "Main", Icon = "star"}) do
-    -- KillAura
-    local killAuraActive = false
-    local function toggleKillAura(state)
-        killAuraActive = state
-        if state then
-            spawn(function()
-                while killAuraActive do
-                    task.wait(0.1)
-                    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
-                        local rootPos = Player.Character.HumanoidRootPart.Position
-                        for _, mob in pairs(Workspace:GetChildren()) do
-                            if mob:IsA("Model") and mob.Name == "Bunny" then
-                                local parts = {}
-                                for _, v in pairs(mob:GetDescendants()) do
-                                    if v:IsA("BasePart") then table.insert(parts, v.Position) end
-                                end
-                                if #parts > 0 then
-                                    local mobPos = Vector3.new(0,0,0)
-                                    for _, p in pairs(parts) do mobPos = mobPos + p end
-                                    mobPos = mobPos / #parts
-                                    if (mobPos - rootPos).Magnitude <= 1000 then
-                                        if mob:FindFirstChild("Humanoid") then
-                                            mob.Humanoid.Health = math.max(mob.Humanoid.Health - 25,0)
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-
-    TabMain:Toggle({
-        Title = "KillAura [BETA]",
-        Value = false,
-        Callback = toggleKillAura
-    })
-
-    -- Place Wood in Fire (กลางแมพสูง 15m)
-    local woodFireActive = false
-    local function togglePlaceWoodInFire(state)
-        woodFireActive = state
-        if state then
-            spawn(function()
-                while woodFireActive do
-                    task.wait(0.5)
-                    if Workspace:FindFirstChild("Items") then
-                        for _, item in pairs(Workspace.Items:GetChildren()) do
-                            if item.Name=="Log" or item.Name=="Coal" or item.Name=="Oil Barrel" or item.Name=="Fuel Canister" then
-                                if item:IsA("Model") then
-                                    local primaryPart = item.PrimaryPart or item:FindFirstChildWhichIsA("BasePart")
-                                    if primaryPart then
-                                        item.PrimaryPart = primaryPart
-                                        item:SetPrimaryPartCFrame(CFrame.new(0,15,0))
-                                    end
-                                elseif item:IsA("BasePart") then
-                                    item.CFrame = CFrame.new(0,15,0)
-                                end
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-
-    TabMain:Toggle({
-        Title = "Place Wood in Fire [BETA]",
-        Value = false,
-        Callback = togglePlaceWoodInFire
-    })
-end
-
-
-local TabPlayer = Window:Tab({Title = "Player", Icon = "user"}) do
-    TabPlayer:Toggle({
-        Title = "WalkSpeed",
-        Value = false,
-        Callback = function(state)
-            local h = Player.Character and Player.Character:FindFirstChild("Humanoid")
-            if h then h.WalkSpeed = state and 100 or 16 end
-        end
-    })
-
-    TabPlayer:Toggle({
-        Title = "JumpPower",
-        Value = false,
-        Callback = function(state)
-            local h = Player.Character and Player.Character:FindFirstChild("Humanoid")
-            if h then h.UseJumpPower = true h.JumpPower = state and 100 or 50 end
-        end
-    })
-
-    TabPlayer:Toggle({
-        Title = "Infinite Jump",
-        Value = false,
-        Callback = function(state)
-            if state then
-                _G.InfJumpConn = UIS.JumpRequest:Connect(function()
-                    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
-                        Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                    end
-                end)
-            else
-                if _G.InfJumpConn then _G.InfJumpConn:Disconnect() _G.InfJumpConn=nil end
-            end
-        end
-    })
-
-    TabPlayer:Toggle({
-        Title = "Light",
-        Value = false,
-        Callback = function(state)
-            if state then
-                local light = Instance.new("PointLight")
-                light.Name = "BodyLight"
-                light.Parent = Player.Character:WaitForChild("HumanoidRootPart")
-                light.Brightness = 10
-                light.Range = 200
-            else
+local killAuraActive = false
+local function toggleKillAura(state)
+    killAuraActive = state
+    if state then
+        spawn(function()
+            while killAuraActive and Wait() do
+                task.wait(0.1)
                 if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
-                    local l = Player.Character.HumanoidRootPart:FindFirstChild("BodyLight")
-                    if l then l:Destroy() end
+                    local rootPos = Player.Character.HumanoidRootPart.Position
+                    for _, mob in pairs(Workspace:GetChildren()) do
+                        if mob:IsA("Model") and mob.Name == "Bunny" then
+                            local parts = {}
+                            for _, v in pairs(mob:GetDescendants()) do
+                                if v:IsA("BasePart") then table.insert(parts, v.Position) end
+                            end
+                            if #parts > 0 then
+                                local mobPos = Vector3.new(0,0,0)
+                                for _, p in pairs(parts) do mobPos = mobPos + p end
+                                mobPos = mobPos / #parts
+                                if (mobPos - rootPos).Magnitude <= 1000 then
+                                    if mob:FindFirstChild("Humanoid") then
+                                        mob.Humanoid.Health = math.max(mob.Humanoid.Health - 25,0)
+                                    end
+                                end
+                            end
+                        end
+                    end
                 end
             end
-        end
-    })
+        end)
+    end
 end
+CombatSection:AddToggle({Name = "KillAura [BETA]",Callback = toggleKillAura})
 
+local woodFireActive = false
+local function togglePlaceWoodInFire(state)
+    woodFireActive = state
+    if state then
+        spawn(function()
+            while woodFireActive and Wait() do
+                task.wait(0.5)
+                if Workspace:FindFirstChild("Items") then
+                    for _, item in pairs(Workspace.Items:GetChildren()) do
+                        if item.Name=="Log" or item.Name=="Coal" or item.Name=="Oil Barrel" or item.Name=="Fuel Canister" then
+                            if item:IsA("Model") then
+                                local primaryPart = item.PrimaryPart or item:FindFirstChildWhichIsA("BasePart")
+                                if primaryPart then
+                                    item.PrimaryPart = primaryPart
+                                    item:SetPrimaryPartCFrame(CFrame.new(0,15,0))
+                                end
+                            elseif item:IsA("BasePart") then
+                                item.CFrame = CFrame.new(0,15,0)
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end
+FarmSection:AddToggle({Name = "Place Wood in Fire [BETA]",Callback = togglePlaceWoodInFire})
 
-local TabTeleport = Window:Tab({Title = "Teleport", Icon = "map"}) do
-    TabTeleport:Button({
-        Title = "TP to Camp",
-        Callback = function()
+local PlayerTab = ProjectHub:CreateTab({Name = "Player"})
+local MovementSection = PlayerTab:CreateSection({Name = "Movement"})
+local UtilitySection = PlayerTab:CreateSection({Name = "Utility"})
+
+MovementSection:AddToggle({
+    Name = "WalkSpeed 100",
+    Callback = function(state)
+        local h = Player.Character and Player.Character:FindFirstChild("Humanoid")
+        if h then h.WalkSpeed = state and 100 or 16 end
+    end
+})
+MovementSection:AddToggle({
+    Name = "JumpPower 100",
+    Callback = function(state)
+        local h = Player.Character and Player.Character:FindFirstChild("Humanoid")
+        if h then h.UseJumpPower = true h.JumpPower = state and 100 or 50 end
+    end
+})
+MovementSection:AddToggle({
+    Name = "Infinite Jump",
+    Callback = function(state)
+        if state then
+            _G.InfJumpConn = UIS.JumpRequest:Connect(function()
+                if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+                    Player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end)
+        else
+            if _G.InfJumpConn then _G.InfJumpConn:Disconnect() _G.InfJumpConn=nil end
+        end
+    end
+})
+UtilitySection:AddToggle({
+    Name = "Light",
+    Callback = function(state)
+        if state then
+            local light = Instance.new("PointLight")
+            light.Name = "BodyLight"
+            light.Parent = Player.Character:WaitForChild("HumanoidRootPart")
+            light.Brightness = 10
+            light.Range = 200
+        else
             if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
-                Player.Character.HumanoidRootPart.CFrame = CFrame.new(0,5,0)
+                local l = Player.Character.HumanoidRootPart:FindFirstChild("BodyLight")
+                if l then l:Destroy() end
             end
         end
-    })
-end
+    end
+})
 
+local TeleportTab = ProjectHub:CreateTab({Name = "Teleport"})
+local TeleportSection = TeleportTab:CreateSection({Name = "Locations"})
+TeleportSection:AddButton({
+    Name = "TP to Camp",
+    Callback = function()
+        if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+            Player.Character.HumanoidRootPart.CFrame = CFrame.new(0,5,0)
+        end
+    end
+})
 
+local BringTab = ProjectHub:CreateTab({Name = "Bring"})
+local BringSection = BringTab:CreateSection({Name = "Items"})
 local bringToggles = {}
 local function toggleBringItem(itemName, state)
     if state then
         bringToggles[itemName] = true
         spawn(function()
-            while bringToggles[itemName] do
+            while bringToggles[itemName] and Wait() do
                 task.wait(0.1)
                 if Workspace:FindFirstChild("Items") and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
                     for _, item in pairs(Workspace.Items:GetChildren()) do
@@ -195,28 +168,10 @@ local function toggleBringItem(itemName, state)
         bringToggles[itemName] = false
     end
 end
+BringSection:AddToggle({Name = "Bring Bandage",Callback = function(state) toggleBringItem("Bandage", state) end})
+BringSection:AddToggle({Name = "Bring Berry",Callback = function(state) toggleBringItem("Berry", state) end})
+BringSection:AddToggle({Name = "Bring Carrot",Callback = function(state) toggleBringItem("Carrot", state) end})
 
-local TabBring = Window:Tab({Title = "Bring", Icon = "package"}) do
-    TabBring:Toggle({
-        Title = "Bring Bandage",
-        Value = false,
-        Callback = function(state) toggleBringItem("Bandage", state) end
-    })
-
-    TabBring:Toggle({
-        Title = "Bring Berry",
-        Value = false,
-        Callback = function(state) toggleBringItem("Berry", state) end
-    })
-
-    TabBring:Toggle({
-        Title = "Bring Carrot",
-        Value = false,
-        Callback = function(state) toggleBringItem("Carrot", state) end
-    })
-end
-
-
-local TabMisc = Window:Tab({Title = "Misc", Icon = "settings"}) do
-    TabMisc:Section({Title = "Coming Soon..."})
-end
+local MiscTab = ProjectHub:CreateTab({Name = "Misc"})
+local MiscSection = MiscTab:CreateSection({Name = "Other"})
+MiscSection:AddLabel({Text = "Coming Soon..."})

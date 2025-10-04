@@ -7,7 +7,7 @@ local Workspace = game:GetService("Workspace")
 local UIS = game:GetService("UserInputService")
 
 local ProjectHub = library:CreateWindow({
-    Name = "Project Hub [Premium]",
+    Name = "Simple Hub pc [Premium]",
     Themeable = {Info = "Discord: VzYTJ7Y"}
 })
 
